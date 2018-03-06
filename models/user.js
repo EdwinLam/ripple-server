@@ -8,20 +8,28 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true,
       autoIncrement: true
     },
-    account_id: {
+    accountId: {
       type: DataTypes.INTEGER(11),
       allowNull: false
     },
-    user_name: {
+    userName: {
       type: DataTypes.STRING(45),
       allowNull: true
     },
     sex: {
-      type: DataTypes.INTEGER(11),
+      type: DataTypes.INTEGER(1),
       allowNull: true
     },
     phone: {
       type: DataTypes.STRING(45),
+      allowNull: true
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
       allowNull: true
     }
   }, {

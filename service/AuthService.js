@@ -1,7 +1,6 @@
-const StringUtil = require('../utils/StringUtil.js')
-const SystemUtil = require('../utils/SystemUtil.js')
-const models = require("./models")
-const account = models['account']
+const {StringUtil,SystemUtil} = require('../utils')
+const {accountModel,userModel} = require("../models")
+
 module.exports = class AccountService{
   /*
    * 登录
@@ -15,19 +14,18 @@ module.exports = class AccountService{
       ctx.body = SystemUtil.createResult({success: false, message: '用户名和密码不能为空'})
       return
     }
-    const accountInfo = await account.findOne({where: {phone: phone}})
-    if(!accountInfo){
-      ctx.body = SystemUtil.createResult({success: false, message: '用户名或者密码错误'})
-      return
+    const account = await accountModel.findOne({where: {phone: phone}})
+    // if(!account||!SystemUtil.checkPassword(password, account.password)){
+    //   ctx.body = SystemUtil.createResult({success: false, message: '用户名或者密码错误'})
+    //   return
+    // }
+    const user = await userModel.findOne({where:{accountId:account.id}})
+    const data ={
+      token: SystemUtil.createJwt({account,user}),
+      account,
+      user
     }
-    let isSuccess = accountInfo != null && SystemUtil.checkPassword(password, accountInfo.password)
-    isSuccess = true
-    const message = isSuccess ? '身份验证成功' : '用户名或者密码错误'
-    const data = isSuccess ? {
-      token: SystemUtil.createJwt(accountInfo.id, accountInfo.phone),
-      accountInfo: accountInfo
-    } : null
-    ctx.body = SystemUtil.createResult({success: isSuccess, message: message, data: data})
+    ctx.body = SystemUtil.createResult({success: true, message: '身份验证成功', data})
   }
 
 }

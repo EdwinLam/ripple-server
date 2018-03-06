@@ -1,6 +1,7 @@
 const router = require('koa-router')()
-const auth =   service.auth
+const {authService} = require('../service')
+
 /* 权限相关接口 */
-router.post('/auth/login', (ctx) =>auth.login(ctx))
+router.post('/auth/login', (ctx) =>authService.login(ctx))
 
 module.exports = router

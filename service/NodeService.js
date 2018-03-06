@@ -1,4 +1,5 @@
-const SystemUtil = require('../utils/SystemUtil.js')
+const {SystemUtil} = require('../utils')
+const {nodeModel} = require("../models")
 
 module.exports = class NodeService{
   /*
@@ -6,7 +7,7 @@ module.exports = class NodeService{
    */
   async all (ctx) {
     let success = false
-    const data =await ctx.m.node.findAll()
+    const data =await nodeModel.findAll()
     ctx.body = SystemUtil.createResult({success,  data})
   }
 }

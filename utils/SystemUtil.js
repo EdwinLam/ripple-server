@@ -3,10 +3,12 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 module.exports = class SystemUtil {
   /* 创建jwt */
-  static createJwt (id, name) {
+  static createJwt ({account,user}) {
     return jwt.sign({
-      name: name,
-      id: id
+      id:account.id,
+      userId:user.id,
+      accountName: account.phone,
+      userName:user.userName
     }, SystemConfig.secret)
   }
 
