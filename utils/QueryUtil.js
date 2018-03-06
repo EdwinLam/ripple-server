@@ -10,13 +10,13 @@ module.exports = class QueryUtil {
     let pageSize = parseInt(ctx.query.pageSize) || 10
     delete ctx.query.pageNo
     delete ctx.query.pageSize
-    let result = await dao.findAndCount({
+    let data = await dao.findAndCount({
       where: ctx.query,
       limit: pageSize,
       offset: (pageNo - 1) * pageSize
     })
-    result.pageNo = pageNo
-    result.pageSize = pageSize
-    ctx.body = SystemUtil.createResult({success: true, message: '成功获取', values: result})
+    data.pageNo = pageNo
+    data.pageSize = pageSize
+    ctx.body = SystemUtil.createResult({success: true, message: '成功获取', data})
   }
 }

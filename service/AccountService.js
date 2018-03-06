@@ -10,6 +10,28 @@ module.exports = class AccountService{
     return QueryUtil.queryPage(ctx,accountModel)
   }
 
+  /*
+   * 删除
+   * @param {Number} id 唯一id
+   */
+  async destroy (ctx) {
+    const count = await accountModel.destroy({where: {id: ctx.params.id}})
+    const isSuccess = count > 0
+    const message = isSuccess ? '删除数据成功' : '删除数据失败'
+    ctx.body = SystemUtil.createResult({success: isSuccess, message: message})
+  }
+
+  async update(ctx){
+    const {phone,email} = ctx.request.body
+    const id = ctx.params.id
+    const updatedAt = new Date().getTime()
+    if (StringUtil.isNull(phone)) {
+      ctx.body = SystemUtil.createResult({success: false, message: '手机号不能为空'})
+    }
+    await accountModel.update({phone,updatedAt,email}, {where: {id}})
+    ctx.body = SystemUtil.createResult({success: true, message: '更新成功'})
+  }
+
   /**
    * 新建账号
    * @param {number} phone 电话号码
@@ -30,12 +52,11 @@ module.exports = class AccountService{
     const accountInfo = await accountModel.findOne({where: {phone: phone}})
     const isExistsAccount = accountInfo != null
     if (!isExistsAccount) {
-      const message = '新建账号' + phone + '成功'
       const data = await accountModel.create({
         password: SystemUtil.enCodePassword(password),
         phone: phone
       })
-      ctx.body = SystemUtil.createResult({success: true, message, data})
+      ctx.body = SystemUtil.createResult({success: true, message: '新建账号' + phone + '成功', data})
     } else {
       const message = '已存在' + phone + '手机的用户'
       ctx.body = SystemUtil.createResult({success: false,message})
