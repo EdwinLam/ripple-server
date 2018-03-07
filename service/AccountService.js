@@ -7,6 +7,9 @@ module.exports = class AccountService{
    * @param {number} password 密码
    */
   async queryPage(ctx){
+    if(ctx.query.phone){
+      ctx.query.phone={$like: ctx.query.phone+'%'}
+    }
     return QueryUtil.queryPage(ctx,accountModel)
   }
 
@@ -39,7 +42,10 @@ module.exports = class AccountService{
    */
   async save (ctx) {
     let phone = ctx.request.body.phone
+    let email = ctx.request.body.email
     let password = ctx.request.body.password
+    if(!password || password=='undefined')
+      password = '123123'
     if (StringUtil.isNull(phone)) {
       ctx.body = SystemUtil.createResult({success: false, message: '号码不能为空'})
       return
@@ -54,7 +60,8 @@ module.exports = class AccountService{
     if (!isExistsAccount) {
       const data = await accountModel.create({
         password: SystemUtil.enCodePassword(password),
-        phone: phone
+        phone: phone,
+        email:email
       })
       ctx.body = SystemUtil.createResult({success: true, message: '新建账号' + phone + '成功', data})
     } else {
