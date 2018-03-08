@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const Sequelize = require('sequelize')
+const _ = require('lodash')
 const DBConfig = require('../config/DBConfig')
 let db = {};
 // 建立连接
@@ -22,7 +23,7 @@ fs.readdirSync(__dirname)
   })
   .forEach(function (file) {
     var model = sequelize.import(path.join(__dirname, file))
-    db[model.name+'Model'] = model;
+    db[_.camelCase(model.name)+'Model'] = model;
   });
 
 db.sequelize = sequelize;
