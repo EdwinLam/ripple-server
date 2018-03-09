@@ -1,25 +1,11 @@
 const {StringUtil,QueryUtil,SystemUtil} =  require('../utils')
-const {mallTypeModel} = require("../models")
+const {mallAttributeModel} = require("../models")
 module.exports = class TypeService{
   async queryPage(ctx){
-    if(ctx.query.typeName){
-      ctx.query.typeName={$like: '%'+ctx.query.typeName+'%'}
+    if(ctx.query.attributeName){
+      ctx.query.attributeName={$like: '%'+ctx.query.attributeName+'%'}
     }
-    return QueryUtil.queryPage(ctx,mallTypeModel)
-  }
-
-  async findAll(ctx){
-    let success = true
-    const data =await mallTypeModel.findAll()
-    ctx.body = SystemUtil.createResult({success,  data})
-  }
-
-  async findBaseType(ctx){
-    let success = true
-    const data =await mallTypeModel.findAll({
-      where:{typeId:0}
-    })
-    ctx.body = SystemUtil.createResult({success,  data})
+    return QueryUtil.queryPage(ctx,mallAttributeModel)
   }
 
   /*
@@ -27,12 +13,7 @@ module.exports = class TypeService{
    * @param {Number} id 唯一id
    */
   async destroy (ctx) {
-    const mallType = await mallTypeModel.findOne({where: {typeId:ctx.params.id}})
-    if(mallType!=null){
-      ctx.body = SystemUtil.createResult({success: false, message: "删除失败，存在子类型"})
-      return
-    }
-    const count = await mallTypeModel.destroy({where: {id: ctx.params.id}})
+    const count = await mallAttributeModel.destroy({where: {id: ctx.params.id}})
     const isSuccess = count > 0
     const message = isSuccess ? '删除数据成功' : '删除数据失败'
     ctx.body = SystemUtil.createResult({success: isSuccess, message: message})

@@ -1,5 +1,5 @@
 const router = require('koa-router')()
-const {accountService,nodeService,userService,mallTypeService} = require('../service')
+const {accountService,nodeService,userService,mallTypeService,mallAttributeService} = require('../service')
 
 /* 账号相关接口 */
 router.post('/account/save', (ctx) => accountService.save(ctx))
@@ -14,6 +14,10 @@ router.get('/mall/type/queryPage', (ctx) => mallTypeService.queryPage(ctx))
 router.del('/mall/type/:id', (ctx) => mallTypeService.destroy(ctx))
 router.post('/mall/type/:id', (ctx) => mallTypeService.update(ctx))
 router.get('/mall/type/findAll', (ctx) => mallTypeService.findAll(ctx))
+router.get('/mall/type/findBaseType', (ctx) => mallTypeService.findBaseType(ctx))
+
+/* 商品属性相关接口 */
+router.get('/mall/attribute/queryPage', (ctx) => mallAttributeService.queryPage(ctx))
 
 /* 用户相关接口*/
 router.get('/user/findUserByAccountId', (ctx) => userService.findUserByAccountId(ctx))
