@@ -21,43 +21,38 @@ module.exports = class TypeService{
   }
 
   async update(ctx){
-    let typeName = ctx.request.body.typeName
+    let attributeName = ctx.request.body.attributeName
     let typeId = ctx.request.body.typeId
     const id = ctx.params.id
-    if (StringUtil.isNull(typeName)) {
-      ctx.body = SystemUtil.createResult({success: false, message: '类型名称不能为空'})
+    if (StringUtil.isNull(attributeName)) {
+      ctx.body = SystemUtil.createResult({success: false, message: '属性名称名称不能为空'})
       return
     }
-    if(!await this.isExistsType({typeName,typeId})){
-      await mallTypeModel.update({typeName,typeId}, {where: {id}})
+    if(!await this.isExistsAttribute({attributeName,typeId})){
+      await mallAttributeModel.update({attributeName,typeId}, {where: {id}})
       ctx.body = SystemUtil.createResult({success: true, message: '更新成功'})
     }else{
-      ctx.body = SystemUtil.createResult({success: false, message: '更新失败,同级类型已存在' + typeName})
+      ctx.body = SystemUtil.createResult({success: false, message: '该类型下已存在[' + attributeName+']'})
     }
   }
 
   async save (ctx) {
-    let typeName = ctx.request.body.typeName
+    let attributeName = ctx.request.body.attributeName
     let typeId = ctx.request.body.typeId
-    let idLink = ctx.request.body.idLink
 
-    if (StringUtil.isNull(typeName)) {
-      ctx.body = SystemUtil.createResult({success: false, message: '类型名称不能为空'})
-      return
-    }
-    if (!await this.isExistsType({typeName,typeId})) {
-      const data = await mallTypeModel.create({
-        typeName,typeId,idLink
+    if (!await this.isExistsAttribute({attributeName,typeId})) {
+      const data = await mallAttributeModel.create({
+        attributeName,typeId
       })
       ctx.body = SystemUtil.createResult({success: true, message: '新建成功', data})
     } else {
-      const message = '同级类型已存在' + typeName
+      const message = '该类型下已存在[' + attributeName+']'
       ctx.body = SystemUtil.createResult({success: false,message})
     }
   }
 
-  async isExistsType({typeName,typeId}){
-    const accountInfo = await mallTypeModel.findOne({where: {typeName,typeId}})
-    return accountInfo != null
+  async isExistsAttribute({attributeName,typeId}){
+    const isExists = await mallAttributeModel.findOne({where: {attributeName,typeId}})
+    return isExists != null
   }
 }

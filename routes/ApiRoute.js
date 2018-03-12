@@ -18,6 +18,9 @@ router.get('/mall/type/findBaseType', (ctx) => mallTypeService.findBaseType(ctx)
 
 /* 商品属性相关接口 */
 router.get('/mall/attribute/queryPage', (ctx) => mallAttributeService.queryPage(ctx))
+router.post('/mall/attribute/save', (ctx) => mallAttributeService.save(ctx))
+router.del('/mall/attribute/:id', (ctx) => mallAttributeService.destroy(ctx))
+router.post('/mall/attribute/:id', (ctx) => mallAttributeService.update(ctx))
 
 /* 用户相关接口*/
 router.get('/user/findUserByAccountId', (ctx) => userService.findUserByAccountId(ctx))
