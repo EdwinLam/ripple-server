@@ -1,17 +1,8 @@
 const {StringUtil,QueryUtil,SystemUtil} =  require('../utils')
-const {mallAttributeModel} = require("../models")
+const {mallItemModel} = require("../models")
 module.exports = class TypeService{
   async queryPage(ctx){
-    if(ctx.query.attributeName){
-      ctx.query.attributeName={$like: '%'+ctx.query.attributeName+'%'}
-    }
-    return QueryUtil.queryPage(ctx,mallAttributeModel)
-  }
-
-  async queryAttributeByTypeId(ctx){
-    let success = true
-    const data =await mallAttributeModel.findAll({where:{typeId:ctx.query.typeId}})
-    ctx.body = SystemUtil.createResult({success,  data})
+    return QueryUtil.queryPage(ctx,mallItemModel)
   }
 
   /*
@@ -19,7 +10,7 @@ module.exports = class TypeService{
    * @param {Number} id 唯一id
    */
   async destroy (ctx) {
-    const count = await mallAttributeModel.destroy({where: {id: ctx.params.id}})
+    const count = await mallItemModel.destroy({where: {id: ctx.params.id}})
     const isSuccess = count > 0
     const message = isSuccess ? '删除数据成功' : '删除数据失败'
     ctx.body = SystemUtil.createResult({success: isSuccess, message: message})
@@ -35,7 +26,7 @@ module.exports = class TypeService{
       return
     }
     if(!await this.isExistsAttribute({attributeName,typeId})){
-      await mallAttributeModel.update({attributeName,typeId}, {where: {id}})
+      await mallItemModel.update({attributeName,typeId}, {where: {id}})
       ctx.body = SystemUtil.createResult({success: true, message: '更新成功'})
     }else{
       ctx.body = SystemUtil.createResult({success: false, message: '该类型下已存在[' + attributeName+']'})
@@ -47,7 +38,7 @@ module.exports = class TypeService{
     let typeId = ctx.request.body.typeId
 
     if (!await this.isExistsAttribute({attributeName,typeId})) {
-      const data = await mallAttributeModel.create({
+      const data = await mallItemModel.create({
         attributeName,typeId
       })
       ctx.body = SystemUtil.createResult({success: true, message: '新建成功', data})
@@ -58,7 +49,7 @@ module.exports = class TypeService{
   }
 
   async isExistsAttribute({attributeName,typeId}){
-    const isExists = await mallAttributeModel.findOne({where: {attributeName,typeId}})
+    const isExists = await mallItemModel.findOne({where: {attributeName,typeId}})
     return isExists != null
   }
 }
